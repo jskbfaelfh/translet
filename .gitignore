@@ -1,0 +1,42 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/.env
+backend/*.db
+backend/*.sqlite3
+
+# Uploads & generated files
+backend/uploads/
+backend/page_images/
+backend/exports/
+backend/*.pdf
+backend/*.png
+backend/*_output.txt
+
+# Test / scratch files
+backend/test_*.py
+backend/scratch_*.py
+backend/list_files.py
+backend/verify_db.py
+backend/reprocess_document.py
+backend/compressed.pdf
+backend/exported_test_via_api.pdf
+backend/test_arabic_shaped.pdf
+backend/test_lecture.pdf
+backend/sample_*.png
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# System
+.DS_Store
+Thumbs.db
+
+# Keep these PDF files in root (lecture samples)
+Lecture_Neural_Networks_.pdf
+Lecture_Neural_Networks_TRANSLATED.pdf
+Lecture_Translation_ONLY.pdf
