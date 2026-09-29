@@ -9,12 +9,24 @@ def create_app(config_class=Config):
 
     # Initialize extensions
     db.init_app(app)
-    # CORS: allow dev localhost + production frontend domain
-    frontend_url = os.environ.get("FRONTEND_URL", "")
-    allowed_origins = ["http://localhost:5173", "http://localhost:3000"]
-    if frontend_url:
-        allowed_origins.append(frontend_url)
-    cors.init_app(app, resources={r"/api/*": {"origins": allowed_origins}})
+    # Universal CORS: allow all origins, methods, and headers
+    cors.init_app(
+        app,
+        resources={
+            r"/*": {
+                "origins": "*",
+                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
+                "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
+            }
+        }
+    )
+
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, HEAD"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+        return response
 
 
     # Register blueprints
