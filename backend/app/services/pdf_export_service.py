@@ -13,6 +13,33 @@ def shape_ar(text: str) -> str:
     except Exception:
         return text
 
+def _safe_insert_fonts(page):
+    reg_candidates = [
+        "C:/Windows/Fonts/arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans.ttf",
+    ]
+    bold_candidates = [
+        "C:/Windows/Fonts/arialbd.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+    ]
+    font_reg = next((p for p in reg_candidates if os.path.exists(p)), None)
+    font_bold = next((p for p in bold_candidates if os.path.exists(p)), font_reg)
+
+    if font_reg:
+        try:
+            page.insert_font(fontname="ArialArabic", fontfile=font_reg)
+        except Exception:
+            pass
+    if font_bold:
+        try:
+            page.insert_font(fontname="ArialBold", fontfile=font_bold)
+        except Exception:
+            pass
+
 class PDFExportService:
     @staticmethod
     def generate_translation_only_pdf(user_doc: UserDocument, output_pdf_path: str):
@@ -20,17 +47,13 @@ class PDFExportService:
         Generates a pure Arabic translation PDF document (ملف الترجمة فقط).
         No original slides included. Formatted as clean A4 study notes per slide.
         """
-        font_path = "C:/Windows/Fonts/arial.ttf"
-        font_bold = "C:/Windows/Fonts/arialbd.ttf"
-        
         # A4 Portrait: width = 595, height = 842
         page_w, page_h = 595, 842
         doc = fitz.open()
 
         for page_rec in user_doc.file.pages:
             page = doc.new_page(width=page_w, height=page_h)
-            page.insert_font(fontname="ArialArabic", fontfile=font_path)
-            page.insert_font(fontname="ArialBold", fontfile=font_bold)
+            _safe_insert_fonts(page)
 
             # Top Header Bar
             header_rect = fitz.Rect(0, 0, page_w, 50)
@@ -122,9 +145,6 @@ class PDFExportService:
         Keeps the original English text and places the Arabic translation directly under each point,
         accompanied by the high-resolution original slide visual for context and diagrams.
         """
-        font_path = "C:/Windows/Fonts/arial.ttf"
-        font_bold = "C:/Windows/Fonts/arialbd.ttf"
-
         # Landscape A4: 842 x 595 pt
         page_w, page_h = 842, 595
         doc = fitz.open()
@@ -135,8 +155,7 @@ class PDFExportService:
         file_rec = user_doc.file
         for page_rec in file_rec.pages:
             page = doc.new_page(width=page_w, height=page_h)
-            page.insert_font(fontname="ArialArabic", fontfile=font_path)
-            page.insert_font(fontname="ArialBold", fontfile=font_bold)
+            _safe_insert_fonts(page)
 
             # Top Header Bar
             header_rect = fitz.Rect(0, 0, page_w, 42)
