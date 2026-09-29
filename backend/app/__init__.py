@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 from app.config import Config
 from app.extensions import db, cors
