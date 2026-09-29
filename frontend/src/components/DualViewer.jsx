@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { api } from "../api";
+import { api, getFullImageUrl } from "../api";
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -201,10 +201,7 @@ export const DualViewer = ({ documentId, onBack }) => {
     }
   };
 
-  const getFullImageUrl = (url) => {
-    if (!url) return "";
-    return url;
-  };
+
 
   const activeSentence = pageData?.sentences?.find((s) => s.id === activeSentenceId) || pageData?.sentences?.[0];
   const activeSentenceIndex = pageData?.sentences?.findIndex((s) => s.id === activeSentence?.id) ?? 0;

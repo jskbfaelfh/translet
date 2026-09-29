@@ -1,5 +1,18 @@
 const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
+export const getFullImageUrl = (url) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    return url;
+  }
+  const apiBase = import.meta.env.VITE_API_URL || "/api";
+  const host = apiBase.replace(/\/api\/?$/, "");
+  if (host) {
+    return `${host}${url.startsWith("/") ? "" : "/"}${url}`;
+  }
+  return url;
+};
+
 export const getAuthToken = () => localStorage.getItem("lith_token");
 export const setAuthToken = (token) => localStorage.setItem("lith_token", token);
 export const removeAuthToken = () => localStorage.removeItem("lith_token");
@@ -71,7 +84,7 @@ export const api = {
 
   downloadTranslatedPdf: async (docId, mode = "bilingual", filename = "lecture_bilingual.pdf") => {
     const token = getAuthToken();
-    const res = await fetch(`/api/documents/${docId}/export-pdf?mode=${mode}`, {
+    const res = await fetch(`${API_BASE}/documents/${docId}/export-pdf?mode=${mode}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
